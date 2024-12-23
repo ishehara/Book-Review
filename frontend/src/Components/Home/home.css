@@ -1,37 +1,48 @@
-.home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
-  }
-  
-  .home-title {
-    font-size: 3rem;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .home-description {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 30px;
-  }
-  
-  .home-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .home-button:hover {
-    background-color: #0056b3;
-  }
-  
+.onboarding-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #52514a, #3498DB); /* Blue gradient background */
+  color: white;
+  text-align: center;
+}
+
+.onboarding-content {
+  max-width: 600px;
+  padding: 20px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.1); /* Light background for content */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.onboarding-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.onboarding-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  font-family: 'Roboto', sans-serif;
+}
+
+.onboarding-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #f7f200; /* Accent color for text */
+  background-color: white; /* White background for the button */
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+.onboarding-button:hover {
+  background-color: #c3cece; /* Green background on hover */
+  color: white; /* White text on hover */
+  transform: scale(1.1); /* Slight scale effect */
+}

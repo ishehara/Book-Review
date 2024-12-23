@@ -1,91 +1,134 @@
+// Review.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Importing axios for making API requests
+import axios from 'axios';
 import './review.css';
+import Nav from '../Nav/nav';
+import UpdateReviewForm from '../UpdateReview/update'; // Import the new form component
 
 function Review() {
   const [reviews, setReviews] = useState([]);
+  const [filteredReviews, setFilteredReviews] = useState([]);
   const [error, setError] = useState(null);
-  const [editingReview, setEditingReview] = useState(null); // Track the review being edited
-  const [updatedText, setUpdatedText] = useState(''); // Track the updated review text
-  const [filterRating, setFilterRating] = useState(0); // Track the rating filter
-  const [sortOrder, setSortOrder] = useState('desc'); // Track the sort order (asc/desc)
+  const [editingReview, setEditingReview] = useState(null);
+  const [modalData, setModalData] = useState(null);
+  const [filterRating, setFilterRating] = useState(0);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch reviews when the component mounts
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/reviews'); // API endpoint to get reviews
-        setReviews(response.data.reviews); // Set reviews to the state
+        const response = await axios.get('http://localhost:5000/reviews');
+        setReviews(response.data.reviews);
+        setFilteredReviews(response.data.reviews); // Initially show all reviews
       } catch (err) {
-        setError('Failed to fetch reviews');
-        console.error("Error fetching reviews:", err); // Log the error for better debugging
+        setError('Failed to fetch reviews. Please try again later.');
+        console.error('Error fetching reviews:', err);
       }
     };
 
     fetchReviews();
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+  }, []);
 
-  // Function to render stars based on rating
-  const renderStars = (rating) => {
-    const filledStars = '★'.repeat(rating); // Filled stars
-    const emptyStars = '☆'.repeat(5 - rating); // Empty stars
-    return (
-      <span className="stars">
-        {filledStars}
-        {emptyStars}
-      </span>
-    );
+  useEffect(() => {
+    filterReviews();
+  }, [searchQuery, filterRating, sortOrder, reviews]);
+
+  const openModal = (review) => {
+    setEditingReview(review._id);
+    setModalData({ ...review });
   };
 
-  // Function to delete a review
-  const deleteReview = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/reviews/${id}`); // API endpoint to delete a review
-      setReviews(reviews.filter((review) => review._id !== id)); // Remove the deleted review from state
-    } catch (err) {
-      console.error("Error deleting review:", err);
-      setError('Failed to delete the review');
-    }
+  const closeModal = () => {
+    setEditingReview(null);
+    setModalData(null);
   };
 
-  // Function to update a review
-  const updateReview = async (id) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setModalData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const saveChanges = async () => {
     try {
-      await axios.put(`http://localhost:5000/reviews/${id}`, { ReviewText: updatedText }); // API endpoint to update a review
-      setReviews(
-        reviews.map((review) =>
-          review._id === id ? { ...review, ReviewText: updatedText } : review
+      await axios.put(`http://localhost:5000/reviews/${editingReview}`, modalData);
+      setReviews((prev) =>
+        prev.map((review) =>
+          review._id === editingReview ? { ...modalData } : review
         )
       );
-      setEditingReview(null); // Exit edit mode
-      setUpdatedText('');
+      closeModal();
     } catch (err) {
-      console.error("Error updating review:", err);
-      setError('Failed to update the review');
+      console.error('Error updating review:', err);
+      setError('Failed to update the review. Please try again.');
     }
   };
 
-  // Function to filter reviews by rating
-  const filteredReviews = reviews.filter((review) =>
-    filterRating === 0 ? true : review.Rating === filterRating
-  );
+  const deleteReview = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/reviews/${id}`);
+      setReviews((prev) => prev.filter((review) => review._id !== id));
+    } catch (err) {
+      console.error('Error deleting review:', err);
+      setError('Failed to delete the review. Please try again.');
+    }
+  };
 
-  // Function to sort reviews by date
-  const sortedReviews = [...filteredReviews].sort((a, b) =>
-    sortOrder === 'asc'
-      ? new Date(a.Date) - new Date(b.Date)
-      : new Date(b.Date) - new Date(a.Date)
-  );
+  const renderStars = (rating) => {
+    const fullStars = '★'.repeat(rating);
+    const emptyStars = '☆'.repeat(5 - rating);
+    return <span>{fullStars}{emptyStars}</span>;
+  };
+
+  // Function to filter reviews based on search, rating, and sorting
+  const filterReviews = () => {
+    let filtered = reviews;
+
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter((review) =>
+        review.BookTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        review.Author.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Filter by rating
+    if (filterRating > 0) {
+      filtered = filtered.filter((review) => review.Rating === filterRating);
+    }
+
+    // Sort by date
+    if (sortOrder === 'asc') {
+      filtered = filtered.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    } else {
+      filtered = filtered.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+    }
+
+    setFilteredReviews(filtered);
+  };
 
   return (
+
+    <div>
+       <Nav />
+    
     <div className="review-container">
+     
       <h1>All Reviews</h1>
 
-      {/* Error Message */}
-      {error && <p>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
-      {/* Filtering and Sorting Options */}
+      {/* Filters */}
       <div className="review-filters">
+        <label>
+          Search:
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by book title or author"
+          />
+        </label>
         <label>
           Filter by Rating:
           <select
@@ -113,44 +156,35 @@ function Review() {
       </div>
 
       {/* Reviews List */}
-      {sortedReviews.length === 0 ? (
-        <p>No reviews available.</p>
-      ) : (
-        <ul className="review-list">
-          {sortedReviews.map((review) => (
+      <ul className="review-list">
+        {filteredReviews.length > 0 ? (
+          filteredReviews.map((review) => (
             <li key={review._id} className="review-item">
               <h3>{review.BookTitle}</h3>
               <p><strong>Author:</strong> {review.Author}</p>
-              <p>
-                <strong>Rating:</strong> {renderStars(review.Rating)}
-              </p>
-              {editingReview === review._id ? (
-                <div>
-                  <textarea
-                    value={updatedText}
-                    onChange={(e) => setUpdatedText(e.target.value)}
-                    placeholder="Update your review"
-                  />
-                  <button onClick={() => updateReview(review._id)}>Save</button>
-                  <button onClick={() => setEditingReview(null)}>Cancel</button>
-                </div>
-              ) : (
-                <p>{review.ReviewText}</p>
-              )}
-              <p><em>Reviewed on: {new Date(review.Date).toLocaleDateString()}</em></p>
+              <p><strong>Rating:</strong> {renderStars(review.Rating)}</p>
+              <p>{review.ReviewText}</p>
               <div className="review-actions">
-                <button onClick={() => {
-                  setEditingReview(review._id);
-                  setUpdatedText(review.ReviewText);
-                }}>
-                  Update
-                </button>
+                <button onClick={() => openModal(review)}>Update</button>
                 <button onClick={() => deleteReview(review._id)}>Delete</button>
               </div>
             </li>
-          ))}
-        </ul>
+          ))
+        ) : (
+          <p>No reviews found matching your filters.</p>
+        )}
+      </ul>
+
+      {/* Modal for editing review */}
+      {editingReview && (
+        <UpdateReviewForm
+          modalData={modalData}
+          handleInputChange={handleInputChange}
+          saveChanges={saveChanges}
+          closeModal={closeModal}
+        />
       )}
+    </div>
     </div>
   );
 }

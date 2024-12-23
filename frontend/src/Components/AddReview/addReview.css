@@ -1,0 +1,88 @@
+.add-review-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-review-container h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .add-review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .add-review-form label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .add-review-form input,
+  .add-review-form select,
+  .add-review-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .add-review-form textarea {
+    height: 100px;
+    resize: none;
+  }
+  
+  .add-review-form button {
+    padding: 10px 15px;
+    background-color: #4caf50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-review-form button:hover {
+    background-color: #45a049;
+  }
+  
+  .success-message {
+    color: #4caf50;
+    text-align: center;
+  }
+  
+  .error-message {
+    color: #f44336;
+    text-align: center;
+  }
+
+  .star-rating {
+    display: flex;
+    gap: 5px;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+  
+  .star {
+    color: #ccc;
+    transition: color 0.3s;
+  }
+  
+  .star.filled {
+    color: #ffc107; /* Gold color for filled stars */
+  }
+  
+  .star:hover,
+  .star:hover ~ .star {
+    color: #ffca28; /* Slightly lighter gold for hover effect */
+  }
+  
+  
