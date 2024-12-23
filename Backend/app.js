@@ -1,14 +1,14 @@
 //qrn8XIGEf5cLbm0S
 const express = require("express");
 const mongoose = require("mongoose");
+const router = require ("./Routes/ReviewRoute")
 
 const app = express();
 
  // middleware
 
- app.use ("/",(req, res, next) => {
-    res.send("It is working");
- })
+ app.use(express.json());
+ app.use ("/reviews",router)
 
  mongoose .connect ("mongodb+srv://Admin:pKuNOxeKUvEBTXtf@bookreview.yyghj.mongodb.net/")
  .then(() => console.log("Connected to MongoDB"))
