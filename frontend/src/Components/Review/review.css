@@ -34,5 +34,15 @@
     color: gold; /* Gold color for stars */
     font-size: 1.2rem; /* Adjust the size as needed */
   }
+
+  .review-filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .review-filters label {
+    margin-right: 10px;
+  }
   
   
