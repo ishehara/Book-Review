@@ -1,19 +1,26 @@
-//qrn8XIGEf5cLbm0S
 const express = require("express");
+const cors = require("cors"); // Import CORS
 const mongoose = require("mongoose");
-const router = require ("./Routes/ReviewRoute")
+const router = require("./Routes/ReviewRoute"); // Import your routes
 
 const app = express();
 
- // middleware
+// Enable CORS for all origins
+app.use(cors());
 
- app.use(express.json());
- app.use ("/reviews",router)
+// Middleware to parse JSON request bodies
+app.use(express.json());
 
- mongoose .connect ("mongodb+srv://Admin:pKuNOxeKUvEBTXtf@bookreview.yyghj.mongodb.net/")
- .then(() => console.log("Connected to MongoDB"))
- .then (() =>{
-    app.listen(5000);
- })
+// Use the review routes
+app.use("/reviews", router);
 
- .catch((err) => console.log((err)));
+// Connect to MongoDB and start the server
+mongoose
+  .connect("mongodb+srv://Admin:pKuNOxeKUvEBTXtf@bookreview.yyghj.mongodb.net/")
+  .then(() => console.log("Connected to MongoDB"))
+  .then(() => {
+    app.listen(5000, () => {
+      console.log("Server is running on port 5000");
+    });
+  })
+  .catch((err) => console.log("Error connecting to MongoDB:", err));

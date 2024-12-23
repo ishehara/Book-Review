@@ -1,14 +1,9 @@
-const express = require ("express");
+const express = require("express");
 const router = express.Router();
 
-// insert Model
-
-const ReviewModel= require ("../Model/ReviewModel");
-
-// insert controller
-
-const ReviewController = require ("../Controllers/ReviewController");
-
+// Import the Review model and controller
+const ReviewModel = require("../Model/ReviewModel");
+const ReviewController = require("../Controllers/ReviewController");
 
 // Routes
 router.get("/", ReviewController.getAllReviews); // Get all reviews
@@ -16,6 +11,5 @@ router.post("/", ReviewController.addReview); // Add a new review
 router.put("/:id", ReviewController.updateReview); // Update an existing review
 router.delete("/:id", ReviewController.deleteReview); // Delete a specific review
 
-// export
-
+// Export the router
 module.exports = router;

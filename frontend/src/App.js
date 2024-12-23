@@ -1,10 +1,12 @@
 //import logo from './logo.svg';
 import './App.css';
+import Review from './Components/Review/review'
 
 function App() {
   return (
-    <div>
-      <h1>HI</h1>
+    <div className="App">
+      <h1>hi</h1>
+      <Review/>
     </div>
   );
 }
